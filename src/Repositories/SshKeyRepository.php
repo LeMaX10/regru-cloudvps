@@ -6,6 +6,7 @@ use LeMaX10\RegruCloudVPS\Contracts\Repositories\SshKeyRepository as SshKeyRepos
 use LeMaX10\RegruCloudVPS\Entities\SshKeyEntity;
 use LeMaX10\RegruCloudVPS\Exceptions\ErrorSaveEntityException;
 use LeMaX10\RegruCloudVPS\Traits\ItemsHelper;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class SshKeysRepository
@@ -21,7 +22,7 @@ class SshKeyRepository extends GuzzleRepository implements SshKeyRepositoryContr
     public function getAll(): array
     {
         $request = $this->getClient()->get('account/keys');
-        $response = \json_decode($request->getBody(), true);
+        $response = \json_decode($request->getBody()->getContents(), true);
 
         return $this->transform($response['ssh_keys'] ?? [], static function(array $item): SshKeysEntityContract {
             return new SshKeyEntity($item);
@@ -44,7 +45,7 @@ class SshKeyRepository extends GuzzleRepository implements SshKeyRepositoryContr
     public function save(SshKeysEntityContract $keyEntity): SshKeysEntityContract
     {
         $request  = empty($keyEntity->getFingerprint()) ? $this->createKey($keyEntity) : $this->updateKey($keyEntity);
-        $response = \json_decode($request->getBody(), true);
+        $response = \json_decode($request->getBody()->getContents(), true);
         $sshKey   = $response['ssh_key'] ?? null;
         if (empty($sshKey)) {
             throw new ErrorSaveEntityException(static::class, $request->getResponse()->getMessage());
@@ -64,9 +65,9 @@ class SshKeyRepository extends GuzzleRepository implements SshKeyRepositoryContr
 
     /**
      * @param SshKeysEntityContract $keyEntity
-     * @return RequestInterface
+     * @return ResponseInterface
      */
-    private function createKey(SshKeysEntityContract $keyEntity): RequestInterface
+    private function createKey(SshKeysEntityContract $keyEntity): ResponseInterface
     {
         return $request = $this->getClient()->post('account/keys', [
             'json' => $keyEntity->toArray()
@@ -75,9 +76,9 @@ class SshKeyRepository extends GuzzleRepository implements SshKeyRepositoryContr
 
     /**
      * @param SshKeysEntityContract $keyEntity
-     * @return RequestInterface
+     * @return ResponseInterface
      */
-    private function updateKey(SshKeysEntityContract $keyEntity): RequestInterface
+    private function updateKey(SshKeysEntityContract $keyEntity): ResponseInterface
     {
         return $request = $this->getClient()->put('account/keys/'. $keyEntity->getFingerprint(), [
             'json' => $keyEntity->toArray()

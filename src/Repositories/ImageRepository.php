@@ -20,7 +20,7 @@ class ImageRepository extends GuzzleRepository implements ImageRepositoryContrac
                 'type' => $type->getValue()
             ]
         ]);
-        $response = \json_decode($request, true);
+        $response = \json_decode($request->getBody()->getContents(), true);
 
         return $this->transform($response['images'] ?? [], static function (array $item): ImageEntityContract {
             return new ImageEntity($item);

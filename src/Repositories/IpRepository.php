@@ -20,7 +20,7 @@ class IpRepository extends GuzzleRepository implements IpRepositoryContract
     public function getAll(): array
     {
         $request = $this->getClient()->get('ips');
-        $response = \json_decode($request, true);
+        $response = \json_decode($request->getBody()->getContents(), true);
 
         return $this->transform($response['ips'] ?? [], static function (array $item): IpAddressEntityContract {
             return new IpAddressEntity($item);

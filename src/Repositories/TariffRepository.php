@@ -15,7 +15,7 @@ class TariffRepository extends GuzzleRepository implements TariffRepositoryContr
     public function getAll(): array
     {
         $request  = $this->getClient()->get('sizes');
-        $response = \json_decode($request->getBody(), true);
+        $response = \json_decode($request->getBody()->getContents(), true);
 
         return $this->transform($response['sizes'] ?? [], static function (array $item): TariffEntityContract {
             return new TariffEntity($item);

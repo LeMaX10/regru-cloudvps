@@ -16,6 +16,10 @@ trait ItemsHelper
      */
     public function transform(array $items, \Closure $callback): array
     {
+        if (empty($items)) {
+            return $items;
+        }
+
         return \array_map($items, $callback);
     }
 

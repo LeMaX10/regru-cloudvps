@@ -10,7 +10,7 @@ use LeMaX10\RegruCloudVPS\Contracts\Repositories\ServerRepository as ServerRepos
 use LeMaX10\RegruCloudVPS\Contracts\Repositories\SnapshotRepository as SnapshotRepositoryContract;
 use LeMaX10\RegruCloudVPS\Contracts\Repositories\SshKeyRepository as SshKeyRepositoryContract;
 use LeMaX10\RegruCloudVPS\Contracts\Repositories\TariffRepository as TariffRepositoryContract;
-use Guzzle\Http\Client as GuzzleClient;
+use GuzzleHttp\Client as GuzzleClient;
 use LeMaX10\RegruCloudVPS\Repositories\ImageRepository;
 use LeMaX10\RegruCloudVPS\Repositories\IpRepository;
 use LeMaX10\RegruCloudVPS\Repositories\ServerRepository;

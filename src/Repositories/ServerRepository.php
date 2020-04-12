@@ -19,7 +19,7 @@ class ServerRepository extends GuzzleRepository implements ServerRepositoryContr
     public function getAll(): array
     {
         $request = $this->getClient()->get('reglets');
-        $response = \json_decode($request->getBody(), true);
+        $response = \json_decode($request->getBody()->getContents(), true);
 
         return $this->transform($response['reglets'] ?? [], static function (array $item): ServerEntityContract {
              return new ServerEntity($item);

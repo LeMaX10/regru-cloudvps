@@ -1,7 +1,7 @@
 <?php namespace LeMaX10\RegruCloudVPS\Actions;
 
 
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
 use LeMaX10\RegruCloudVPS\Contracts\Action as ActionContract;
 
 /**

@@ -14,7 +14,7 @@ class SnapshotRepository extends GuzzleRepository implements SnapshotRepositoryC
     public function getAll(): array
     {
         $request  = $this->getClient()->get('snapshots');
-        $response = \json_decode($request->getBody(), true);
+        $response = \json_decode($request->getBody()->getContents(), true);
 
         return $this->transform($response['snapshots'] ?? [], static function (array $item): ImageEntityContract {
             return new ImageEntity($item);
