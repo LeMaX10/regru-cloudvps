@@ -24,7 +24,7 @@ interface ServerAction
      * @param bool $backup
      * @return ServerCreateResponse
      */
-    public function create(TariffEntity $tariffEntity, ImageEntity $imageEntity, ?string $name = null, ?array $sshKeys=[], bool $backup = false): ServerCreateResponse;
+    public function create(TariffEntity $tariffEntity, ImageEntity $imageEntity, ?string $name = null, ?array $sshKeys = [], bool $backup = false): ServerCreateResponse;
 
     /**
      * Рестарт сервера

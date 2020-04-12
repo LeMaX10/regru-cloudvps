@@ -1,26 +1,38 @@
 <?php namespace LeMaX10\RegruCloudVPS;
 
 
-use LeMaX10\RegruCloudVPS\Repositories\GuzzleRepository;
+use LeMaX10\RegruCloudVPS\Actions\ServerAction;
+use LeMaX10\RegruCloudVPS\Contracts\Actions\ServerAction as ServerActionContract;
+use LeMaX10\RegruCloudVPS\Contracts\CloudVpnClient;
+use LeMaX10\RegruCloudVPS\Contracts\Repositories\ImageRepository as ImageRepositoryContract;
+use LeMaX10\RegruCloudVPS\Contracts\Repositories\IpRepository as IpRepositoryContract;
+use LeMaX10\RegruCloudVPS\Contracts\Repositories\ServerRepository as ServerRepositoryContract;
+use LeMaX10\RegruCloudVPS\Contracts\Repositories\SnapshotRepository as SnapshotRepositoryContract;
+use LeMaX10\RegruCloudVPS\Contracts\Repositories\SshKeyRepository as SshKeyRepositoryContract;
+use LeMaX10\RegruCloudVPS\Contracts\Repositories\TariffRepository as TariffRepositoryContract;
+use Guzzle\Http\Client as GuzzleClient;
+use LeMaX10\RegruCloudVPS\Repositories\ImageRepository;
+use LeMaX10\RegruCloudVPS\Repositories\IpRepository;
+use LeMaX10\RegruCloudVPS\Repositories\ServerRepository;
+use LeMaX10\RegruCloudVPS\Repositories\SnapshotRepository;
+use LeMaX10\RegruCloudVPS\Repositories\SshKeyRepository;
+use LeMaX10\RegruCloudVPS\Repositories\TariffRepository;
 
 /**
  * Class Client
  * @package LeMaX10\RegruCloudVPS
  */
-class Client
+class Client implements CloudVpnClient
 {
     /**
      * @var array
      */
     protected $config;
+
     /**
-     * @var \Guzzle\Http\Client
+     * @var GuzzleClient
      */
     protected $client;
-    /**
-     * @var array
-     */
-    protected $loadedRepositories = [];
 
     /**
      * Client constructor.
@@ -29,52 +41,78 @@ class Client
     public function __construct(array $config)
     {
         $this->config = $config;
-        $this->client = new \Guzzle\Http\Client([
-            'base_uri' => $this->config['url'],
-            'headers'  => [
-                'Authorization' => 'Bearer '. $this->config['token']
-            ]
-        ]);
     }
 
     /**
-     * @param $name
-     * @param $arguments
-     *
-     * @return mixed
+     * @return GuzzleClient
      */
-    public function __call($name, $arguments)
+    public function getClient(): GuzzleClient
     {
-        if (!isset($this->loadedRepositories[$name])) {
-            $this->loadedRepositories[$name] = $this->loadRepository($name);
+        if (!$this->client) {
+            $this->client = new GuzzleClient([
+                'base_uri' => $this->config['url'],
+                'headers'  => [
+                    'Authorization' => 'Bearer ' . $this->config['token']
+                ]
+            ]);
         }
 
-        return $this->loadedRepositories[$name];
+        return $this->client;
     }
 
     /**
-     * @param string $name
-     * @return GuzzleRepository|null
+     * @inheritDoc
      */
-    public function loadRepository(string $name): ?GuzzleRepository
+    public function images(): ImageRepositoryContract
     {
-        if ($repository = $this->hasRepository($name)) {
-            return new $repository($this->client);
-        }
-
-        return null;
+        return new ImageRepository($this->getClient());
     }
 
     /**
-     * @param string $name
-     * @return bool
+     * @inheritDoc
      */
-    public function hasRepository(string $name): ?string
+    public function ips(): IpRepositoryContract
     {
-        $studly = ucwords(str_replace(['-','_'], ' ', $name));
-        $repositoryName = ucfirst(str_replace(' ', '', $studly)) .'Repository';
-        $repositoryNamespace = 'LeMaX10\\Repositories\\'. $repositoryName;
+        return new IpRepository($this->getClient());
+    }
 
-        return class_exists($repositoryNamespace) ? $repositoryName : null;
+    /**
+     * @inheritDoc
+     */
+    public function servers(): ServerRepositoryContract
+    {
+        return new ServerRepository($this->getClient());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function snapshots(): SnapshotRepositoryContract
+    {
+        return new SnapshotRepository($this->getClient());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function sshkeys(): SshKeyRepositoryContract
+    {
+        return new SshKeyRepository($this->getClient());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function tariffs(): TariffRepositoryContract
+    {
+        return new TariffRepository($this->getClient());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function serverAction(): ServerActionContract
+    {
+        return new ServerAction($this->getClient());
     }
 }
