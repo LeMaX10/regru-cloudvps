@@ -20,7 +20,7 @@ trait ItemsHelper
             return $items;
         }
 
-        return \array_map($items, $callback);
+        return \array_map($callback, $items);
     }
 
     /**
