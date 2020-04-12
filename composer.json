@@ -1,5 +1,5 @@
 {
-  "name": "lemax10/regru-cloudvps",
+  "name": "lemax10/regrucloudvps",
   "type": "library",
   "description": "Reg.RU CloudVPS sdk",
   "keywords": ["regru", "cloudvps"],
@@ -23,8 +23,8 @@
   "require": {
     "php": ">=7.2",
     "ext-json": "*",
-    "myclabs/php-enum": "^1.7.*",
-    "guzzlehttp/guzzle": "~6.5.*",
+    "myclabs/php-enum": "^1.7.0",
+    "guzzlehttp/guzzle": "^6.5.0",
     "nesbot/carbon": "2.32.*"
   },
   "require-dev": {
