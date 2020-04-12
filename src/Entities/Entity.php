@@ -38,6 +38,22 @@ abstract class Entity
     }
 
     /**
+     * @return string
+     */
+    public function json(): string
+    {
+        return \json_encode($this->getRaw());
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->json();
+    }
+
+    /**
      * @param $name
      * @return mixed|null
      */
