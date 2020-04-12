@@ -11,18 +11,13 @@
       "homepage": "https://pyankov.pro"
     },
     {
-      "name": "PHP Enum contributors",
+      "name": "PHP CloudVPS contributors",
       "homepage": "https://github.com/lemax10/regru-cloudvps/graphs/contributors"
     }
   ],
   "autoload": {
     "psr-4": {
       "LeMaX10\\RegruCloudVPS\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "LeMaX10\\RegruCloudVPS\\Tests\\": "tests/"
     }
   },
   "require": {
